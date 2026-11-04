@@ -1713,3 +1713,36 @@ footer a:hover {
     animation: none !important;
   }
 }
+
+/* Keep the supporting UI readable alongside deliberately tiny pixel art. */
+.card-eyebrow { font-size: 8px; }
+.learning-card h3 { font-size: 10px; }
+.learning-stats > div > span { font-size: 7px; }
+.learning-stats small { font-size: 8px; line-height: 1.6; display: block; }
+.prediction > div > span { font-size: 7px; }
+.prediction p { font-size: 9px; line-height: 1.6; }
+.brain-foot > span, .brain-foot > button { font-size: 8px; }
+.under-arena { font-size: 9px; }
+.overlay-box > small { font-size: 8px; line-height: 1.7; }
+.overlay-kicker { font-size: 7px; }
+.notes-card > p { font-size: 11px; }
+.notes-bottom p { font-size: 10px; }
+.event-list button { font-size: 9px; line-height: 1.6; }
+.round-metrics span { font-size: 9px; line-height: 1.5; }
+.replay-transport > span { font-size: 9px; }
+.controls-desktop > span { font-size: 9px; }
+kbd { font-size: 8px; }
+@media (max-width: 600px) {
+  .learning-card { column-gap: 14px; }
+  .learning-stats > div > span { font-size: 6px; }
+  .learning-stats small { font-size: 7px; }
+  .prediction p { font-size: 8px; }
+  .prediction > div > span { font-size: 6px; }
+  .brain-foot > span, .brain-foot > button { font-size: 7px; }
+  .mode-control select { font-size: 9px; }
+  .overlay-box > small { font-size: 6px; }
+  .overlay-kicker { font-size: 6px; }
+  .controls-desktop > span { font-size: 7px; }
+  kbd { font-size: 6px; }
+  .round-metrics span { font-size: 7px; }
+}
