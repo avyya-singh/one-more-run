@@ -1,5 +1,7 @@
 # One More Run
 
+**[Play the game](https://one-more-run-avyya.vercel.app)** · **[Source code](https://github.com/avyya-singh/one-more-run)**
+
 A small pixel arena with an adaptive rival, a real browser-local movement classifier, and an inspectable replay lab. All pixel artwork is drawn in Canvas/CSS; there are no generated illustrations or third-party character assets.
 
 ## Play

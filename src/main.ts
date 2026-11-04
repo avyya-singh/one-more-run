@@ -197,6 +197,7 @@ function begin() {
   $<HTMLSelectElement>("round-select").disabled = true;
   $<HTMLButtonElement>("watch-replay").disabled = true;
   $<HTMLButtonElement>("reset-model").disabled = true;
+  $<HTMLButtonElement>("export").disabled = true;
   $("arena-state").textContent = "Round live. Mochi is watching your movement.";
   $("arena-corner").textContent = "AIM WITH YOUR MOUSE · J AUTO-AIMS AT MOCHI";
   $("round-number").textContent =
@@ -285,13 +286,13 @@ addEventListener("keydown", (e) => {
     e.target instanceof HTMLSelectElement
   )
     return;
-  if ((e.target as HTMLElement)?.closest("button,a")) return;
   const k = e.key.toLowerCase();
   if (k === "p" && game) {
     e.preventDefault();
     status === "paused" ? resume() : pause();
     return;
   }
+  if ((e.target as HTMLElement)?.closest("button,a")) return;
   if (status !== "playing") return;
   if (
     [
@@ -592,9 +593,11 @@ $("replay-play").addEventListener("click", () => {
   if (replayTime >= selected.duration) replayTime = 0;
   openReplay(replayTime, !replayPlaying);
 });
-$("scrubber").addEventListener("input", () =>
-  openReplay(Number($<HTMLInputElement>("scrubber").value), false),
-);
+const seekReplay = () =>
+  openReplay(Number($<HTMLInputElement>("scrubber").value), false);
+$("scrubber").addEventListener("input", seekReplay);
+$("scrubber").addEventListener("change", seekReplay);
+$("scrubber").addEventListener("pointerdown", () => { replayPlaying = false; });
 $("round-select").addEventListener("change", () => {
   const r = rounds.find(
     (r) => r.id === $<HTMLSelectElement>("round-select").value,

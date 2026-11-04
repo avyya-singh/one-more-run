@@ -352,7 +352,7 @@ export class Game {
       if (b.life > 0 && Math.hypot(target.x - b.x, target.y - b.y) < 15) {
         b.life = 0;
         if (target.invulnerable === 0) {
-          const damage = b.owner === "player" ? 10 : 16;
+          const damage = b.owner === "player" ? 4 : 16;
           target.hp = Math.max(0, target.hp - damage);
           target.invulnerable = 0.16;
           if (b.owner === "player") this.hits++;
