@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#f6f5ef" />
+    <meta
+      name="description"
+      content="A small pixel arena with an adaptive rival. Play a round, inspect the replay, and watch a real browser-local model learn your movement patterns."
+    />
+    <title>One More Run · a tiny rival with a good memory</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%233d5141'/%3E%3Cpath d='M8 10h5v4h6v-4h5v14H8z' fill='%23dda56f'/%3E%3Crect x='11' y='17' width='3' height='3' fill='%233d5141'/%3E%3Crect x='19' y='17' width='3' height='3' fill='%233d5141'/%3E%3C/svg%3E"
+    />
+  </head>
+  <body>
+    <a href="#arena" class="skip">Skip to game</a>
+    <header>
+      <a class="brand" href="#"
+        ><span class="brand-icon"><i></i><i></i><i></i><i></i></span>one more
+        run<span class="brand-period">.</span></a
+      >
+      <nav aria-label="Main navigation">
+        <a class="nav-active" href="#arena">The arena</a
+        ><a href="#replay-lab">Replay lab</a
+        ><a href="#field-guide">How it works <span>↗</span></a>
+      </nav>
+      <span class="local-badge"
+        ><span></span> made to play. built to learn.</span
+      >
+    </header>
+    <main>
+      <section class="intro">
+        <div>
+          <div class="eyebrow">
+            <span class="tiny-square"></span> A PLAYABLE LITTLE ML EXPERIMENT
+          </div>
+          <h1>Small arena.<br /><span>Personal rivalry.</span></h1>
+          <p>
+            Meet Mochi. The more you play, the more it learns your moves.<br />A
+            cute face. A questionable amount of patience.
+          </p>
+        </div>
+        <div class="intro-note">
+          <div class="mini-mochi" aria-hidden="true">
+            <i></i><i></i><b></b><em></em>
+          </div>
+          <span>“you went left again.”</span><small>MOCHI, PROBABLY</small>
+        </div>
+      </section>
+      <section
+        class="play-layout"
+        id="arena"
+        aria-label="Game arena and learning dashboard"
+      >
+        <div class="game-column">
+          <div class="game-card">
+            <div class="game-top">
+              <span><i class="live-dot"></i> THE LITTLE CLEARING</span
+              ><span id="round-number">ROUND 01</span>
+              <div class="top-actions">
+                <button id="new-round" hidden>New round ↗</button
+                ><button id="sound" aria-pressed="false" title="Toggle sound">
+                  Sound off</button
+                ><button id="pause" disabled>Ⅱ Pause</button>
+              </div>
+            </div>
+            <div class="arena-wrap">
+              <canvas
+                id="game"
+                width="800"
+                height="450"
+                tabindex="0"
+                aria-label="Pixel arena. Move with WASD or arrows, dash with Space, attack with mouse click or J. Press P to pause."
+              ></canvas>
+              <div class="arena-hud" aria-hidden="true">
+                <span
+                  ><i class="player-dot"></i> YOU
+                  <b id="player-hp">100</b></span
+                ><span class="timer" id="timer">0:45</span
+                ><span
+                  ><i class="rival-dot"></i> MOCHI
+                  <b id="rival-hp">100</b></span
+                >
+              </div>
+              <div class="arena-overlay" id="overlay">
+                <div class="overlay-box">
+                  <span class="overlay-kicker" id="overlay-kicker"
+                    >YOUR NEXT FAVOURITE NEMESIS</span
+                  >
+                  <h2 id="overlay-title">Just one round?</h2>
+                  <p id="overlay-description">
+                    Move, dash, and land your shots.<br />Mochi’s taking notes.
+                  </p>
+                  <button class="primary start-button" id="start">
+                    Let’s play <span>↗</span></button
+                  ><small id="overlay-hint"
+                    >45 seconds · no account · all in your browser</small
+                  >
+                </div>
+              </div>
+              <span class="arena-corner" id="arena-corner"
+                >YOU + MOCHI / NO HARD FEELINGS</span
+              >
+            </div>
+            <div class="game-bottom">
+              <div class="controls-desktop">
+                <span
+                  ><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> move</span
+                ><span><kbd>SPACE</kbd> dash</span
+                ><span><kbd>CLICK</kbd> / <kbd>J</kbd> attack</span>
+              </div>
+              <span id="dash-status"><i></i>dash ready</span>
+            </div>
+          </div>
+          <div class="touch-controls" aria-label="Touch controls">
+            <div class="dpad">
+              <button data-direction="up" aria-label="Move up">↑</button
+              ><button data-direction="left" aria-label="Move left">←</button
+              ><button data-direction="down" aria-label="Move down">↓</button
+              ><button data-direction="right" aria-label="Move right">→</button>
+            </div>
+            <div class="touch-actions">
+              <button id="touch-dash">Dash</button
+              ><button id="touch-attack">Attack</button>
+            </div>
+          </div>
+          <div class="under-arena">
+            <span
+              ><i class="tiny-square"></i
+              ><b id="arena-state">Ready when you are.</b></span
+            ><span>No server. No API calls. Just a little rivalry.</span>
+          </div>
+        </div>
+        <aside class="learning-card">
+          <div class="card-eyebrow">
+            YOUR RIVAL’S LITTLE BRAIN <span class="training-indicator"></span>
+          </div>
+          <div class="rival-profile">
+            <div class="mochi-portrait" aria-hidden="true">
+              <div class="mini-mochi"><i></i><i></i><b></b><em></em></div>
+            </div>
+            <div>
+              <h2>
+                Mochi <span>LV. <b id="level">1</b></span>
+              </h2>
+              <p>Small. Observant. Slightly smug.</p>
+            </div>
+          </div>
+          <div class="mode-control">
+            <label for="mode">Rival behaviour</label
+            ><select id="mode">
+              <option value="adaptive">Adaptive · learns your moves</option>
+              <option value="scripted">Scripted · fixed aim baseline</option>
+            </select>
+          </div>
+          <div class="learning-stats">
+            <div>
+              <span>MOVES OBSERVED</span><strong id="samples">0</strong
+              ><small>saved on this device</small>
+            </div>
+            <div>
+              <span>NEXT-MOVE ACCURACY</span><strong id="accuracy">—</strong
+              ><small id="baseline">play a round to measure</small>
+            </div>
+          </div>
+          <div class="prediction">
+            <div>
+              <h3>What you’ll do next</h3>
+              <span id="prediction-confidence">WAITING</span>
+            </div>
+            <div class="prediction-actions" id="prediction-actions">
+              <span data-action="0">←</span><span data-action="1">→</span
+              ><span data-action="2">↑</span><span data-action="3">↓</span
+              ><span data-action="4">·</span>
+            </div>
+            <p id="prediction-note">Mochi needs a few moves to work with.</p>
+          </div>
+          <div class="learning-chart">
+            <div>
+              <h3>Learning, round by round</h3>
+              <span>ACCURACY</span>
+            </div>
+            <svg
+              id="learning-plot"
+              viewBox="0 0 260 70"
+              role="img"
+              aria-label="Next-move prediction accuracy by completed round"
+            >
+              <path
+                d="M0 20H260M0 50H260"
+                stroke="#e6e7dc"
+                stroke-dasharray="3 4"
+              />
+              <text
+                x="130"
+                y="40"
+                text-anchor="middle"
+                fill="#a0a895"
+                font-size="9"
+              >
+                Your first round goes here.
+              </text>
+            </svg>
+          </div>
+          <div class="brain-foot">
+            <span>Online learning · softmax classifier</span
+            ><button id="reset-model">Reset model ↺</button>
+          </div>
+        </aside>
+      </section>
+      <section class="replay-section" id="replay-lab">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">AFTER THE “ONE MORE”</span>
+            <h2>A little replay. A lot to learn.</h2>
+          </div>
+          <button id="export" class="secondary" disabled>
+            ↓ Export telemetry
+          </button>
+        </div>
+        <div class="replay-grid">
+          <div class="replay-main">
+            <div class="replay-toolbar">
+              <div class="replay-title">
+                <span class="small-icon">↶</span>
+                <h3>Replay lab</h3>
+                <span id="replay-count">0 rounds</span>
+              </div>
+              <select
+                id="round-select"
+                aria-label="Choose a round to replay"
+                disabled
+              >
+                <option>Play your first round</option>
+              </select>
+            </div>
+            <div class="replay-empty" id="replay-empty">
+              <span>↶</span>
+              <h3>The good bits, frame by frame.</h3>
+              <p>
+                Finish a round to replay it, inspect predictions,<br />and find
+                out whether Mochi actually learned anything.
+              </p>
+            </div>
+            <div class="replay-body" id="replay-body" hidden>
+              <div class="round-result">
+                <strong id="result-title">Round complete</strong
+                ><span id="result-info"></span
+                ><button class="text-button" id="watch-replay">
+                  Watch in arena ↗
+                </button>
+              </div>
+              <div class="replay-timeline">
+                <canvas
+                  id="timeline"
+                  width="650"
+                  height="70"
+                  aria-label="Round event timeline"
+                ></canvas
+                ><input
+                  id="scrubber"
+                  type="range"
+                  min="0"
+                  max="45"
+                  step="0.1"
+                  value="0"
+                  aria-label="Seek replay time"
+                />
+              </div>
+              <div class="replay-transport">
+                <button id="replay-play" aria-label="Play replay">▶</button
+                ><span id="replay-time">0:00 / 0:45</span
+                ><select id="replay-speed" aria-label="Replay speed">
+                  <option value="1">1× speed</option>
+                  <option value="2">2× speed</option>
+                  <option value="0.5">0.5× speed</option>
+                </select>
+                <div class="timeline-legend">
+                  <span><i class="legend-dash"></i>dash</span
+                  ><span><i class="legend-hit"></i>hit</span
+                  ><span
+                    ><i class="legend-prediction"></i>rival prediction</span
+                  >
+                </div>
+              </div>
+              <div class="round-metrics">
+                <div>
+                  <span>Prediction accuracy</span><b id="round-accuracy">—</b>
+                </div>
+                <div>
+                  <span>Majority baseline</span><b id="round-baseline">—</b>
+                </div>
+                <div><span>Shots landed</span><b id="round-hits">—</b></div>
+                <div>
+                  <span>Cross-entropy loss</span><b id="round-loss">—</b>
+                </div>
+              </div>
+            </div>
+          </div>
+          <aside class="notes-card">
+            <span class="eyebrow">FIELD NOTES</span>
+            <h3 id="notes-title">Every round tells a story.</h3>
+            <p id="notes-copy">
+              The model predicts before it sees your next move. Then it learns
+              from what actually happened.
+            </p>
+            <div class="notes-bottom">
+              <span class="note-star">✳</span>
+              <p id="notes-tip">
+                Try a few adaptive rounds, then switch to scripted mode and
+                compare. These are observations, not a controlled experiment.
+              </p>
+            </div>
+            <div id="event-list" class="event-list"></div>
+          </aside>
+        </div>
+      </section>
+      <section class="field-guide" id="field-guide">
+        <div>
+          <span class="eyebrow">UNDER THE PIXELS</span>
+          <h2>A real model.<br />A very small grudge.</h2>
+          <p>
+            No language model, no scripted “learning” animation. A lightweight
+            classifier updates its weights from your movement, right here in
+            your browser.
+          </p>
+        </div>
+        <div class="guide-steps">
+          <article>
+            <span>01</span>
+            <div>
+              <h3>You play.</h3>
+              <p>
+                Position, movement, cooldowns, and nearby obstacles become 23
+                features. A sample is collected every quarter second.
+              </p>
+            </div>
+          </article>
+          <article>
+            <span>02</span>
+            <div>
+              <h3>Mochi makes a guess.</h3>
+              <p>
+                Five possible actions: left, right, up, down, or idle. Each
+                prediction is scored against your next move before training on
+                it.
+              </p>
+            </div>
+          </article>
+          <article>
+            <span>03</span>
+            <div>
+              <h3>The weights change.</h3>
+              <p>
+                Online gradient descent updates a softmax classifier. Adaptive
+                Mochi uses confident predictions to lead its shots.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+      <footer>
+        <a class="brand" href="#"
+          >one more run<span class="brand-period">.</span></a
+        >
+        <p>Built by Avyya Singh. All learning stays on your device.</p>
+        <div>
+          <a
+            href="https://github.com/avyya-singh"
+            target="_blank"
+            rel="noopener noreferrer"
+            >GitHub ↗</a
+          ><span>GG. See you next round.</span>
+        </div>
+      </footer>
+    </main>
+    <div id="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

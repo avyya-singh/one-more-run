@@ -1,0 +1,17 @@
+{
+  "name": "one-more-run",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 4183",
+    "build": "tsc --noEmit && vite build",
+    "test": "tsc -p tsconfig.test.json && node --test .test-dist/tests/*.test.js",
+    "evaluate": "tsc -p tsconfig.test.json && node .test-dist/scripts/evaluate-telemetry.js"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "~5.7.2",
+    "vite": "^6.4.0"
+  }
+}
